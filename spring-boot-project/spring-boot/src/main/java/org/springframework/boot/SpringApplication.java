@@ -335,16 +335,16 @@ public class SpringApplication {
 			configureIgnoreBeanInfo(environment);
 			// 打印 Spring Banner
 			Banner printedBanner = printBanner(environment);
-            // 创建 Spring 容器。
+            // 【主要步骤1】根据classpath包含类情况创建不同类型spring容器（webmvc、webflux、非web）
 			context = createApplicationContext();
 			// 获得异常报告器 SpringBootExceptionReporter 数组
 			exceptionReporters = getSpringFactoriesInstances(
 					SpringBootExceptionReporter.class,
 					new Class[] { ConfigurableApplicationContext.class }, context);
-			// 主要是调用所有初始化类的 initialize 方法
+			// 【主要步骤2】设置容器的一些属性，并调用所有ApplicationContextInitializer类的 initialize方法
 			prepareContext(context, environment, listeners, applicationArguments,
 					printedBanner);
-			// 初始化 Spring 容器。
+			// 【主要步骤3】初始化 Spring 容器，onRefresh()创建内嵌的webserver服务器、在finishRefresh()启动webserver服务器，并在过程中大量使用事件通知机制进行各种初始化或相应设置（如日志系统、配置文件加载）
 			refreshContext(context);
 			// 执行 Spring 容器的初始化的后置逻辑。默认实现为空。
 			afterRefresh(context, applicationArguments);
